@@ -1532,7 +1532,6 @@
     let depthPipeline = null;
 
     async function loadModel() {
-      showLoad('正在加载深度估计模型...', '首次加载需要下载模型文件（约50MB），请耐心等待');
       try {
         const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
         env.allowLocalModels = false;
@@ -1544,12 +1543,9 @@
           }
         });
         S.modelLoaded = true;
-        hideLoad();
-        toast('深度估计模型加载完成');
         return true;
       } catch (err) {
         console.error(err);
-        hideLoad();
         toast('模型加载失败: ' + err.message);
         return false;
       }
@@ -1557,8 +1553,11 @@
 
     async function runDepth() {
       if (!S.imageReady) return;
-      if (!S.modelLoaded) { if (!await loadModel()) return; }
       toast('生成中.....请等待30秒', 30000);
+      if (!S.modelLoaded) {
+        showLoad('正在加载深度估计模型...', '首次加载需要下载模型文件（约50MB），请耐心等待');
+        if (!await loadModel()) { hideLoad(); return; }
+      }
       showLoad('正在生成深度图...', '');
       try {
         const { RawImage } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
