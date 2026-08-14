@@ -1533,7 +1533,7 @@
 
     async function loadModel() {
       try {
-        const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
+        const { pipeline, env } = await cdnImport('@huggingface/transformers@3');
         env.allowLocalModels = false;
         depthPipeline = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf', {
           progress_callback: (p) => {
@@ -1560,7 +1560,7 @@
       }
       showLoad('正在生成深度图...', '');
       try {
-        const { RawImage } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
+        const { RawImage } = await cdnImport('@huggingface/transformers@3');
 
         // Load image via img element, then draw to canvas for reliable input
         const img = new Image();
@@ -1634,7 +1634,7 @@
       $('aiStatus').style.display = 'flex';
       try {
         setAIStatus('Segment', 'loading');
-        const t = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
+        const t = await cdnImport('@huggingface/transformers@3');
         const { AutoModel, AutoProcessor } = t;
         if (!modnetModel) {
           [modnetModel, modnetProc] = await Promise.all([
@@ -1950,7 +1950,7 @@
       if (lamaModel) return true;
       try {
         setAIStatus('Inpaint', 'loading');
-        const t = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
+        const t = await cdnImport('@huggingface/transformers@3');
         const { AutoModel, AutoProcessor } = t;
         [lamaModel, lamaProc] = await Promise.all([
           AutoModel.from_pretrained('Xenova/lama', {
@@ -1974,7 +1974,7 @@
       if (segformerModel) return true;
       try {
         setAIStatus('Segment', 'loading');
-        const t = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
+        const t = await cdnImport('@huggingface/transformers@3');
         const { AutoModelForSemanticSegmentation, AutoProcessor } = t;
         [segformerModel, segformerProc] = await Promise.all([
           AutoModelForSemanticSegmentation.from_pretrained('Xenova/segformer-b0-finetuned-ade-512-512', {
@@ -2044,7 +2044,7 @@
         }
         mCtx.putImageData(maskImg, 0, 0);
 
-        const { RawImage } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
+        const { RawImage } = await cdnImport('@huggingface/transformers@3');
         const imgRaw = RawImage.fromCanvas(imageCanvas);
         const maskRaw = RawImage.fromCanvas(maskCanvas);
 
@@ -2067,7 +2067,7 @@
 
       $('loadingText').textContent = '正在语义分割...';
       try {
-        const { RawImage } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
+        const { RawImage } = await cdnImport('@huggingface/transformers@3');
         const imgRaw = RawImage.fromCanvas(imageCanvas);
         const inputs = await segformerProc(imgRaw);
         const { logits } = await segformerModel(inputs);
@@ -2350,6 +2350,23 @@
     });
 
     // ===================== HELPERS =====================
+    const CDN_SOURCES = [
+      (pkg) => `https://cdn.jsdelivr.net/npm/${pkg}`,
+      (pkg) => `https://unpkg.com/${pkg}`,
+      (pkg) => `https://esm.sh/${pkg}`,
+    ];
+    async function cdnImport(pkgPath) {
+      for (const source of CDN_SOURCES) {
+        try {
+          const url = source(pkgPath);
+          const mod = await import(url);
+          if (Object.keys(mod).length === 0 && CDN_SOURCES.indexOf(source) < CDN_SOURCES.length - 1) continue;
+          return mod;
+        } catch (e) { /* try next CDN */ }
+      }
+      throw new Error(`所有 CDN 源均无法加载: ${pkgPath}`);
+    }
+
     function showLoad(t, h) {
       $('loadingText').textContent = t;
       $('loadingHint').textContent = h || '';
