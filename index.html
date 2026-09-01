@@ -480,10 +480,13 @@
     }
 
     /* Mobile HUD as sidebar dots */
-    @media (max-width: 600px) {
-      .hud { display: none !important; }
-      .mobile-status { display: flex !important; }
+/* Mobile HUD as sidebar dots */
+@media (max-width: 600px) {
+    .hud,
+    .mobile-status {
+        display: none !important;
     }
+}
     .mobile-status { display: none; gap: 8px; padding: 8px 14px; background: var(--surface); border-radius: 8px; margin-top: 8px; }
     .mobile-status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: 0.3s; flex-shrink: 0; }
     .mobile-status-dot.on { background: var(--accent2); }
