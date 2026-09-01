@@ -318,12 +318,13 @@
       .panel-camera { display: none; }
     }
 @media (max-width: 600px) { 
-    .depth-preview,
-    .depth-status,
-    .gesture-indicator,
-    #gestureIndicator {
-        display: none !important;
-    }
+.depth-preview,
+.depth-status,
+.panel-camera,
+.gesture-indicator,
+#gestureIndicator {
+    display: none !important;
+}
 
     body { overflow: auto; } 
     .main { flex-direction: column; height: auto; min-height: 100vh; } 
@@ -2722,6 +2723,68 @@
     initThree();
     setupMobileGyroscope();
     updateMobileLayout();
+    if (window.matchMedia('(max-width: 600px)').matches) {
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+        let dragging = false;
+        let startValue = slider.value;
+
+        slider.addEventListener('touchstart', e => {
+            const touch = e.touches[0];
+            const rect = slider.getBoundingClientRect();
+
+            const min = Number(slider.min || 0);
+            const max = Number(slider.max || 100);
+            const value = Number(slider.value);
+
+            if (max === min) return;
+
+            const thumbPercent = (value - min) / (max - min);
+            const thumbX = rect.left + thumbPercent * rect.width;
+
+            startValue = slider.value;
+
+            if (Math.abs(touch.clientX - thumbX) <= 28) {
+                dragging = true;
+            } else {
+                dragging = false;
+                slider.value = startValue;
+            }
+        }, { passive: true });
+
+        slider.addEventListener('touchmove', e => {
+            if (!dragging) {
+                e.preventDefault();
+                slider.value = startValue;
+                return;
+            }
+
+            e.preventDefault();
+
+            const touch = e.touches[0];
+            const rect = slider.getBoundingClientRect();
+
+            const min = Number(slider.min || 0);
+            const max = Number(slider.max || 100);
+
+            let percent = (touch.clientX - rect.left) / rect.width;
+            percent = Math.max(0, Math.min(1, percent));
+
+            const value = min + (max - min) * percent;
+
+            slider.value = value;
+            slider.dispatchEvent(new Event('input', { bubbles: true }));
+        }, { passive: false });
+
+        slider.addEventListener('touchend', () => {
+            dragging = false;
+        }, { passive: true });
+
+        slider.addEventListener('touchcancel', () => {
+            dragging = false;
+        }, { passive: true });
+    });
+}
   </script>
+
 </body>
 </html>
