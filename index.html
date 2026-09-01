@@ -20,14 +20,28 @@
       --shadow: rgba(108,92,231,0.15);
       --radius: 12px;
     }
+    html.light {
+      --bg: #f5f5f8;
+      --bg2: #ffffff;
+      --bg3: #e8e8ee;
+      --surface: rgba(0,0,0,0.04);
+      --ink: #1a1a2e;
+      --muted: #6b6b80;
+      --rule: rgba(0,0,0,0.10);
+      --shadow: rgba(0,0,0,0.08);
+    }
+    html.light .header { background: rgba(255,255,255,0.85); }
+    html.light .hud { background: rgba(255,255,255,0.85); }
+    html.light .loading-overlay { background: rgba(245,245,248,0.92); }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', 'SF Pro Display', -apple-system, sans-serif;
       background: var(--bg);
       color: var(--ink);
       overflow: hidden;
-      height: 100vh;
-      width: 100vw;
+      height: 100vh; height: 100dvh;
+      width: 100%;
     }
 
     /* Header */
@@ -57,8 +71,21 @@
     }
     .header-actions { display: flex; align-items: center; gap: 12px; }
 
+    .theme-toggle {
+      width: 36px; height: 36px;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+      padding: 0;
+    }
+    .theme-toggle:hover { background: var(--bg3); border-color: var(--accent); }
+
     /* Main */
-    .main { height: 100vh; padding-top: 56px; display: flex; }
+    .main { height: 100vh; height: 100dvh; padding-top: 56px; display: flex; }
 
     /* Sidebar */
     .sidebar {
@@ -71,6 +98,7 @@
     .sidebar::-webkit-scrollbar { width: 4px; }
     .sidebar::-webkit-scrollbar-track { background: transparent; }
     .sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
+    .sidebar { scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
 
     .panel { padding: 20px; border-bottom: 1px solid var(--rule); }
     .panel-title {
@@ -78,6 +106,7 @@
       text-transform: uppercase; letter-spacing: 0.1em;
       color: var(--muted); margin-bottom: 14px;
       display: flex; align-items: center; gap: 8px;
+      justify-content: flex-start;
     }
 
     /* Upload */
@@ -131,7 +160,7 @@
     .control-label .value { font-size: 12px; color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
 
     input[type="range"] {
-      width: 100%; -webkit-appearance: none;
+      width: 100%; -webkit-appearance: none; appearance: none; -moz-appearance: none;
       height: 6px; background: var(--bg3); border-radius: 3px; outline: none;
     }
     input[type="range"]::-webkit-slider-thumb {
@@ -244,13 +273,13 @@
 
     /* HUD */
     .hud {
-      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 16px; align-items: center;
-      padding: 10px 18px; background: rgba(10,10,15,0.85);
+      position: absolute; top: 50%; right: 20px; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 12px; align-items: center;
+      padding: 14px 10px; background: rgba(10,10,15,0.85);
       backdrop-filter: blur(16px); border-radius: 12px;
       border: 1px solid var(--rule); font-size: 12px; color: var(--muted); z-index: 50;
     }
-    .hud-item { display: flex; align-items: center; gap: 6px; }
+    .hud-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .hud-dot { width: 8px; height: 8px; border-radius: 50%; }
     .hud-dot.on { background: var(--accent2); }
     .hud-dot.off { background: var(--muted); opacity: 0.3; }
@@ -307,7 +336,6 @@
       .panel-title { margin-bottom: 10px; }
       .btn { padding: 10px 16px; font-size: 13px; }
       .hud { bottom: 10px; padding: 8px 14px; font-size: 11px; gap: 10px; display: none !important; }
-      .welcome { display: none; }
     }
 
     /* Toggle Switch */
@@ -336,9 +364,47 @@
     .ai-dot.ready { background: var(--accent2); }
     .ai-dot.loading { background: var(--accent3); animation: pulse 1s ease-in-out infinite; }
     @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    /* Utility classes */
+    .control-hint { font-size: 10px; color: var(--muted); margin-top: 4px; }
+    .upload-hint { font-size: 11px; color: var(--muted); margin-top: 8px; }
+    .control-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    /* Focus visible */
+    .btn:focus-visible, .theme-toggle:focus-visible, .mode-option:focus-visible, .mobile-mode-option:focus-visible, .upload-zone:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px;
+    }
+    input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Light theme accent3 */
+    html.light { --accent3: #d63384; }
+
+    /* Mobile welcome simplified */
+    @media (max-width: 600px) {
+      .welcome { display: block; padding: 20px 16px; text-align: center; }
+      .welcome-icon { width: 48px; height: 48px; font-size: 22px; margin-bottom: 12px; border-radius: 14px; }
+      .welcome h2 { font-size: 15px; margin-bottom: 6px; }
+      .welcome p { font-size: 12px; line-height: 1.5; }
+      .welcome-steps { gap: 8px; margin-top: 14px; }
+      .welcome-step { padding: 10px 8px; }
+      .welcome-step .step-num { width: 20px; height: 20px; font-size: 11px; margin-bottom: 6px; }
+      .welcome-step .step-text { font-size: 11px; }
+    }
+
+    /* Mobile HUD as sidebar dots */
+    @media (max-width: 600px) {
+      .hud { display: none !important; }
+      .mobile-status { display: flex !important; }
+    }
+    .mobile-status { display: none; gap: 8px; padding: 8px 14px; background: var(--surface); border-radius: 8px; margin-top: 8px; }
+    .mobile-status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: 0.3s; flex-shrink: 0; }
+    .mobile-status-dot.on { background: var(--accent2); }
+    .mobile-status-label { font-size: 11px; color: var(--muted); }
   </style>
 </head>
 <body>
+  <noscript><div style="padding:40px;text-align:center;color:#e8e8f0;background:#0a0a0f;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;"><h2>需要启用 JavaScript</h2><p style="margin-top:12px;color:#7a7a90;">此应用需要 JavaScript 才能运行。</p></div></noscript>
 
   <header class="header">
     <div class="logo">
@@ -346,9 +412,25 @@
       <span>Gesture 2.5D</span>
     </div>
     <div class="header-actions">
-      <div class="mode-switch" id="modeSwitch">
-        <div class="mode-option active" data-mode="gesture">手势控制</div>
-        <div class="mode-option" data-mode="mouse">鼠标控制</div>
+      <button class="theme-toggle" id="themeToggle" title="切换深色/浅色模式" aria-label="切换深色/浅色模式">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <div class="mode-switch" id="modeSwitch" role="tablist" aria-label="控制方式">
+        <div class="mode-option active" data-mode="gesture" role="tab" tabindex="0" aria-selected="true">手势控制</div>
+        <div class="mode-option" data-mode="mouse" role="tab" tabindex="0" aria-selected="false">鼠标控制</div>
       </div>
     </div>
   </header>
@@ -357,20 +439,20 @@
     <aside class="sidebar">
       <div class="panel mobile-only" id="mobileControlPanel" style="display:none;">
         <div class="panel-title"><span>&#128241;</span> 控制方式</div>
-        <div class="mobile-mode-switch">
-          <div class="mobile-mode-option active" data-mobile-mode="touch">触摸控制</div>
-          <div class="mobile-mode-option" data-mobile-mode="gyro">陀螺仪</div>
+        <div class="mobile-mode-switch" role="tablist" aria-label="移动端控制方式">
+          <div class="mobile-mode-option active" data-mobile-mode="touch" role="tab" tabindex="0" aria-selected="true">触摸控制</div>
+          <div class="mobile-mode-option" data-mobile-mode="gyro" role="tab" tabindex="0" aria-selected="false">陀螺仪</div>
         </div>
       </div>
 
       <!-- Upload -->
       <div class="panel">
-        <div class="panel-title"><span>&#128444;</span> 上传图片</div>
-        <div class="upload-zone" id="uploadZone">
+        <div class="panel-title"><span>🖼️</span> 上传图片</div>
+        <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="上传图片">
           <div class="upload-placeholder">
             <div class="upload-icon">&#128247;</div>
             <div class="upload-text">拖拽图片到此处<br>或 <strong>点击选择文件</strong></div>
-            <div class="upload-text" style="font-size:11px;margin-top:8px;">支持 JPG / PNG / WebP</div>
+            <div class="upload-hint">支持 JPG / PNG / WebP</div>
           </div>
           <img class="upload-preview" id="uploadPreview" alt="preview">
         </div>
@@ -380,7 +462,7 @@
           <span class="depth-status-text" id="depthStatusText">正在生成深度图...</span>
         </div>
         <div class="depth-preview" id="depthPreview">
-          <canvas id="depthCanvas"></canvas>
+          <canvas id="depthCanvas" aria-label="深度图预览"></canvas>
           <div class="depth-preview-label">深度图预览</div>
         </div>
       </div>
@@ -389,8 +471,8 @@
       <div class="panel panel-camera">
         <div class="panel-title"><span>&#127909;</span> 摄像头手势</div>
         <div class="camera-container" id="cameraContainer">
-          <video id="webcam" playsinline autoplay muted></video>
-          <canvas id="gestureCanvas"></canvas>
+          <video id="webcam" playsinline autoplay muted aria-label="摄像头画面"></video>
+          <canvas id="gestureCanvas" aria-label="手势识别画布"></canvas>
           <div class="camera-placeholder" id="cameraPlaceholder">
             <span class="icon">&#128400;</span>
             <span>点击下方按钮开启摄像头</span>
@@ -410,32 +492,43 @@
       <div class="panel">
         <div class="panel-title"><span>&#9881;</span> 参数调整（建议陀螺仪调高参数）</div>
         <div class="control-group">
-          <div class="control-label"><span>立体强度</span><span class="value" id="depthScaleVal">0.70</span></div>
-          <input type="range" id="depthScale" min="0" max="2" step="0.05" value="0.70">
+          <div class="control-label"><span>立体强度</span><span class="value" id="depthScaleVal">0.65</span></div>
+          <input type="range" id="depthScale" min="0" max="2" step="0.05" value="0.65" aria-label="立体强度">
         </div>
         <div class="control-group">
-          <div class="control-label"><span>深度偏移</span><span class="value" id="depthBiasVal">0.25</span></div>
-          <input type="range" id="depthBias" min="-0.5" max="0.5" step="0.01" value="0.25">
+          <div class="control-label"><span>灵敏度</span><span class="value" id="sensitivityVal">0.90</span></div>
+          <input type="range" id="sensitivity" min="0.2" max="5" step="0.1" value="0.9" aria-label="灵敏度">
         </div>
         <div class="control-group">
-          <div class="control-label"><span>深度对比度</span><span class="value" id="depthContrastVal">1.0</span></div>
-          <input type="range" id="depthContrast" min="0.3" max="3" step="0.05" value="1">
-          <div style="font-size:10px;color:var(--muted);margin-top:4px;">&lt;1 浅化区分 &nbsp; &gt;1 深化区分</div>
+          <div class="control-label"><span>动画回弹</span><span class="value" id="dampingVal">0.89</span></div>
+          <input type="range" id="damping" min="0.5" max="0.99" step="0.01" value="0.89" aria-label="动画回弹">
         </div>
         <div class="control-group">
-          <div class="control-label"><span>灵敏度</span><span class="value" id="sensitivityVal">1.5</span></div>
-          <input type="range" id="sensitivity" min="0.2" max="5" step="0.1" value="1.5">
+          <div class="control-label"><span>深度偏移</span><span class="value" id="depthBiasVal">0.00</span></div>
+          <input type="range" id="depthBias" min="-0.15" max="0.25" step="0.01" value="0" aria-label="深度偏移">
+          <div class="control-hint">正值推近主体 &nbsp; 负值推远主体</div>
         </div>
         <div class="control-group">
-          <div class="control-label"><span>动画回弹</span><span class="value" id="dampingVal">0.82</span></div>
-          <input type="range" id="damping" min="0.5" max="0.99" step="0.01" value="0.82">
+          <div class="control-label"><span>深度对比度</span><span class="value" id="depthContrastVal">1.05</span></div>
+          <input type="range" id="depthContrast" min="0.3" max="3" step="0.05" value="1.05" aria-label="深度对比度">
+          <div class="control-hint">&lt;1 浅化区分 &nbsp; &gt;1 深化区分</div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>视差锚点</span><span class="value" id="pivotVal">0.20</span></div>
+          <input type="range" id="pivot" min="0" max="1" step="0.01" value="0.20" aria-label="视差锚点">
+          <div class="control-hint">0 背景固定 &nbsp; 1 主体固定</div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>最大位移</span><span class="value" id="maxOffsetVal">0.020</span></div>
+          <input type="range" id="maxOffset" min="0.005" max="0.06" step="0.005" value="0.02" aria-label="最大位移">
+          <div class="control-hint">越大立体越强，也越容易涂抹</div>
         </div>
       </div>
 
       <!-- AI Features -->
       <div class="panel panel-ai">
         <div class="panel-title"><span>&#129302;</span> AI 增强</div>
-        <div class="control-group" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="control-group control-row">
           <span style="font-size:13px;color:var(--ink);">自动参数</span>
           <label class="toggle-switch">
             <input type="checkbox" id="autoParamsToggle" checked>
@@ -455,6 +548,18 @@
         <button class="btn btn-primary btn-block" id="generateBtn" disabled>生成 2.5D 效果</button>
         <button class="btn btn-secondary btn-block" style="margin-top:8px;" id="resetBtn">重置视角</button>
       </div>
+
+      <!-- Mobile Status -->
+      <div class="panel">
+        <div class="mobile-status">
+          <div class="mobile-status-dot" id="mHudDepth"></div>
+          <span class="mobile-status-label">深度图</span>
+          <div class="mobile-status-dot" id="mHudCamera"></div>
+          <span class="mobile-status-label">摄像头</span>
+          <div class="mobile-status-dot" id="mHudGesture"></div>
+          <span class="mobile-status-label">手势</span>
+        </div>
+      </div>
     </aside>
 
     <section class="canvas-area" id="canvasArea">
@@ -468,7 +573,7 @@
           <div class="welcome-step"><div class="step-num">3</div><div class="step-text">手势控制视角</div></div>
         </div>
       </div>
-      <canvas id="threeCanvas" style="display:none;"></canvas>
+      <canvas id="threeCanvas" style="display:none;" aria-label="2.5D 视差视图"></canvas>
       <div class="hud" id="hud" style="display:none;">
         <div class="hud-item"><div class="hud-dot off" id="hudDepth"></div><span>深度图</span></div>
         <div class="hud-item"><div class="hud-dot off" id="hudCamera"></div><span>摄像头</span></div>
@@ -482,7 +587,7 @@
     </section>
   </main>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script type="importmap">
   {
@@ -497,6 +602,7 @@
     import * as THREE from 'three';
 
     // ===================== STATE =====================
+    const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
     const S = {
       mode: 'gesture',
       gyroActive: false,
@@ -507,11 +613,14 @@
       isGrabbing: false,
       targetX: 0, targetY: 0,
       currX: 0, currY: 0,
-      depthScale: 0.70,
-      depthBias: 0.25,
-      depthContrast: 1.0,
-      sensitivity: 1.5,
-      damping: 0.82,
+      depthScale: 0.65,
+      depthBias: 0,
+      depthContrast: 1.05,
+      sensitivity: 0.90,
+      damping: 0.89,
+      pivot: 0.20,
+      pivotManual: false,
+      maxOffset: 0.02,
       imageUrl: null,
       depthCanvas: null,
       mattingModel: null,
@@ -544,8 +653,8 @@
     const gCtx         = gestureCv.getContext('2d');
 
     // ===================== THREE.JS =====================
-    let scene, camera, renderer, planeBack, planeFront, particles, particleData;
-    let smoothX = 0, smoothY = 0, tickRunning = false;
+    let scene, camera, renderer, planeBack, planeFront, particles, particleData, parallaxMats = [];
+    let tickRunning = false;
     const DEADZONE = 0.008;
 
     function initThree() {
@@ -560,14 +669,15 @@
       dl.position.set(0.5, 0.5, 1);
       scene.add(dl);
       resize();
-      window.addEventListener('resize', resize);
+      let resizeTimer;
+      window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 100); });
     }
 
     function createParticleSystem() {
       if (particles) { scene.remove(particles); particles.geometry.dispose(); particles.material.dispose(); }
 
       // ── Cosmic particles: space dust + stars + rare flares ──
-      const DUST = 4000, STARS = 1400, FLARES = 100;
+      const DUST = 1200, STARS = 700, FLARES = 100;
       const COUNT = DUST + STARS + FLARES;
       const geo = new THREE.BufferGeometry();
       const positions = new Float32Array(COUNT * 3);
@@ -783,18 +893,14 @@
       camera.updateProjectionMatrix();
     }
 
+    // Apple-style spatial-photo parallax. The card stays flat and centred; depth
+    // is applied purely in the fragment shader by offsetting each pixel's sample
+    // UV against the depth map. Near pixels shift one way, far pixels the other —
+    // the "window into the photo" look — with no edge warping from a 3D mesh.
     const parallaxVert = `
       varying vec2 vUv;
-      varying vec3 vViewDirTS;
       void main() {
         vUv = uv;
-        vec3 worldPos = (modelMatrix * vec4(position, 1.0)).xyz;
-        vec3 viewDir = normalize(cameraPosition - worldPos);
-        vec3 T = normalize((modelMatrix * vec4(1.0, 0.0, 0.0, 0.0)).xyz);
-        vec3 B = normalize((modelMatrix * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
-        vec3 N = normalize(cross(T, B));
-        mat3 TBN = mat3(T, B, N);
-        vViewDirTS = normalize(TBN * viewDir);
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `;
@@ -802,28 +908,33 @@
     const parallaxFrag = `
       uniform sampler2D map;
       uniform sampler2D depthMap;
-      uniform float parallaxStrength;
-      uniform float depthBias;
-      uniform float depthContrast;
-      uniform vec3 lightDir;
+      uniform vec2 uViewOffset;
+      uniform float uDepthScale;
+      uniform float uDepthBias;
+      uniform float uDepthContrast;
+      uniform float uLayerScale;
+      uniform float uPivot;
+      uniform float uMaxOffset;
       varying vec2 vUv;
-      varying vec3 vViewDirTS;
       void main() {
-        float depth = 1.0 - texture2D(depthMap, vUv).r;
-        depth = clamp(depth + depthBias, 0.0, 1.0);
-        depth = pow(depth, depthContrast);
-        depth = smoothstep(0.15, 0.85, depth);
-        float viewAngle = length(vViewDirTS.xy) / max(abs(vViewDirTS.z), 0.1);
-        viewAngle = min(viewAngle, 0.6);
-        vec2 offset = vViewDirTS.xy / max(vViewDirTS.z, 0.05) * depth * parallaxStrength;
-        offset = clamp(offset, vec2(-0.03), vec2(0.03));
-        vec2 uv = vUv - offset;
-        uv = clamp(uv, 0.001, 0.999);
-        vec4 color = texture2D(map, uv);
-        vec3 c = pow(color.rgb, vec3(1.0 / 2.2));
-        float diff = max(dot(vec3(0.0, 0.0, 1.0), lightDir), 0.0);
-        vec3 lit = vec3(0.95) + vec3(0.05) * diff;
-        gl_FragColor = vec4(c * lit, color.a);
+        float nearness = 1.0 - texture2D(depthMap, vUv).r;
+        // Depth bias nudges the whole depth range nearer/farther before
+        // contrast is applied, letting auto-tuning shift the subject plane.
+        nearness = clamp(nearness + uDepthBias, 0.0, 1.0);
+        nearness = pow(nearness, uDepthContrast);
+        float amount = 0.035 + uDepthScale * 0.14;
+        // Foreground protrusion relative to the background pivot. Soft-saturate
+        // the far end so thin protruding features (hands, fingers) don't tear
+        // away from the subject into a visible "double image".
+        float weight = nearness - uPivot;
+        weight = weight < 0.0
+          ? weight / (1.0 - 4.0 * weight)
+          : weight / (1.0 + 6.0 * weight);
+        vec2 offset = uViewOffset * weight * amount * uLayerScale;
+        offset = clamp(offset, vec2(-uMaxOffset), vec2(uMaxOffset));
+        vec2 uv = vUv + offset;
+        uv = clamp(uv, 0.0, 1.0);
+        gl_FragColor = texture2D(map, uv);
       }
     `;
 
@@ -918,31 +1029,50 @@
         fgPixels.data[pi + 3] = fgAlpha;
       }
 
-      for (let i = 0; i < finalAlpha.length; i++) {
-        const pi = i * 4;
-        const a = fgPixels.data[pi + 3];
-        if (a > 0 && a < 250) {
-          const cx = i % w, cy = Math.floor(i / w);
+      // Separable Gaussian edge smoothing: 5-tap horizontal then vertical
+      const kernel = [1, 4, 6, 4, 1];
+      const kSum = 16;
+      // Horizontal pass
+      const hBuf = new Float32Array(w * h * 3);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          if (fgPixels.data[i + 3] < 250) continue;
+          let rAcc = 0, gAcc = 0, bAcc = 0;
+          for (let k = -2; k <= 2; k++) {
+            const nx = Math.min(w - 1, Math.max(0, x + k));
+            const ni = (y * w + nx) * 4;
+            const weight = kernel[k + 2];
+            rAcc += fgPixels.data[ni] * weight;
+            gAcc += fgPixels.data[ni + 1] * weight;
+            bAcc += fgPixels.data[ni + 2] * weight;
+          }
+          const hi = (y * w + x) * 3;
+          hBuf[hi]     = rAcc / kSum;
+          hBuf[hi + 1] = gAcc / kSum;
+          hBuf[hi + 2] = bAcc / kSum;
+        }
+      }
+      // Vertical pass and apply
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          if (fgPixels.data[i + 3] >= 250) continue;
           let rAcc = 0, gAcc = 0, bAcc = 0, cnt = 0;
-          for (let dy = -2; dy <= 2; dy++) {
-            for (let dx = -2; dx <= 2; dx++) {
-              const nx = cx + dx, ny = cy + dy;
-              if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
-              const ni = (ny * w + nx) * 4;
-              if (fgPixels.data[ni + 3] >= 250) {
-                const dist = Math.abs(dx) + Math.abs(dy);
-                const weight = dist === 0 ? 3 : (dist === 1 ? 2 : 1);
-                rAcc += fgPixels.data[ni] * weight;
-                gAcc += fgPixels.data[ni + 1] * weight;
-                bAcc += fgPixels.data[ni + 2] * weight;
-                cnt += weight;
-              }
-            }
+          for (let k = -2; k <= 2; k++) {
+            const ny = Math.min(h - 1, Math.max(0, y + k));
+            const hi = (ny * w + x) * 3;
+            if (hBuf[hi] === 0 && hBuf[hi + 1] === 0 && hBuf[hi + 2] === 0) continue;
+            const weight = kernel[k + 2];
+            rAcc += hBuf[hi] * weight;
+            gAcc += hBuf[hi + 1] * weight;
+            bAcc += hBuf[hi + 2] * weight;
+            cnt += weight;
           }
           if (cnt > 0) {
-            fgPixels.data[pi]     = Math.round(rAcc / cnt);
-            fgPixels.data[pi + 1] = Math.round(gAcc / cnt);
-            fgPixels.data[pi + 2] = Math.round(bAcc / cnt);
+            fgPixels.data[i]     = Math.round(rAcc / cnt);
+            fgPixels.data[i + 1] = Math.round(gAcc / cnt);
+            fgPixels.data[i + 2] = Math.round(bAcc / cnt);
           }
         }
       }
@@ -972,87 +1102,105 @@
       return fgCanvas;
     }
 
-    // A real depth mesh gives the camera something physical to move around.
-    // The former effect only shifted texture coordinates, which reads as a flat
-    // card (and becomes noticeably warped near the edges).
-    function makeDepthGeometry(aspect, depthCanvas, layerDepth = 1) {
-      const longSide = 190;
-      const sx = Math.max(48, Math.round(aspect >= 1 ? longSide : longSide * aspect));
-      const sy = Math.max(48, Math.round(aspect >= 1 ? longSide / aspect : longSide));
-      const geometry = new THREE.PlaneGeometry(
+    // Apple-style spatial-photo parallax: the plane stays flat and centred, and
+    // near/far separation is drawn entirely in the fragment shader. No vertex
+    // displacement means no edge warping and no per-frame geometry rebuild.
+    function makeParallaxPlane(aspect) {
+      return new THREE.PlaneGeometry(
         aspect >= 1 ? 1 : aspect,
         aspect >= 1 ? 1 / aspect : 1,
-        sx, sy
+        1, 1
       );
-      geometry.userData.depthLayer = layerDepth;
-      geometry.userData.depthCanvas = depthCanvas;
-      geometry.userData.sampleWidth = sx + 1;
-      geometry.userData.sampleHeight = sy + 1;
-      applyDepthToGeometry(geometry);
-      return geometry;
     }
 
-    function applyDepthToGeometry(geometry) {
-      const source = geometry.userData.depthCanvas;
-      if (!source) return;
-      const pos = geometry.attributes.position;
-      const sample = geometry.userData._sampleCanvas || (() => {
-        const c = document.createElement('canvas');
-        c.width = geometry.userData.sampleWidth;
-        c.height = geometry.userData.sampleHeight;
-        geometry.userData._sampleCanvas = c;
-        return c;
-      })();
-      const sampleCtx = sample.getContext('2d', { willReadFrequently: true });
-      // Downsample the depth texture to the mesh resolution, so rebuilding stays
-      // responsive even for large uploaded photographs.
-      sampleCtx.drawImage(source, 0, 0, sample.width, sample.height);
-      const px = sampleCtx.getImageData(0, 0, sample.width, sample.height).data;
-      const values = new Float32Array(pos.count);
-      for (let i = 0; i < pos.count; i++) values[i] = 1 - px[i * 4] / 255;
-      // Suppress single-pixel AI depth noise before it turns into visible
-      // ripples on the 3D surface, while retaining edges and silhouettes.
-      const filtered = values.slice();
-      const cols = geometry.userData.sampleWidth;
-      const rows = geometry.userData.sampleHeight;
-      for (let y = 1; y < rows - 1; y++) {
-        for (let x = 1; x < cols - 1; x++) {
-          const i = y * cols + x;
-          filtered[i] = values[i] * 0.60 +
-            (values[i - 1] + values[i + 1] + values[i - cols] + values[i + cols]) * 0.10;
-        }
-      }
-      const sorted = Array.from(values).sort((a, b) => a - b);
-      const low = sorted[Math.floor(sorted.length * 0.04)];
-      const high = sorted[Math.floor(sorted.length * 0.96)];
-      const range = Math.max(high - low, 0.08);
-      const amount = (0.035 + S.depthScale * 0.14) * geometry.userData.depthLayer;
-      for (let i = 0; i < pos.count; i++) {
-        const depth = Math.min(1, Math.max(0, (filtered[i] - low) / range));
-        // A gentle curve keeps large skies/walls stable while bringing subjects forward.
-        const tunedDepth = Math.min(1, Math.max(0, depth + S.depthBias * 0.20));
-        pos.setZ(i, (Math.pow(tunedDepth, S.depthContrast) - 0.45) * amount);
-      }
-      pos.needsUpdate = true;
-      geometry.computeVertexNormals();
-      geometry.attributes.normal.needsUpdate = true;
-    }
-
-    function makeLayerMaterial(texture, transparent = false) {
-      texture.colorSpace = THREE.SRGBColorSpace;
+    function makeParallaxMaterial(texture, depthCanvas, { layerScale = 1, transparent = false } = {}) {
+      texture.colorSpace = THREE.NoColorSpace;
       texture.minFilter = THREE.LinearMipmapLinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.needsUpdate = true;
-      // Depth maps have sharp discontinuities at hair and clothing edges. An
-      // illuminated physical material turns those folds into a dark outline;
-      // an unlit texture keeps the photograph's original lighting intact.
-      return new THREE.MeshBasicMaterial({
-        map: texture,
+
+      // Downsample the depth map to a low, smooth resolution before upload.
+      // Full-res depth has razor-sharp silhouettes; parallax sampling across
+      // those edges stretches neighbouring pixels into smeared streaks. A small
+      // bilinear depth (sampled linearly in the shader) softens those edges into
+      // gradients — removing the smearing while keeping overall depth intact.
+      const MAX_SIDE = 320;
+      const dw = depthCanvas.width, dh = depthCanvas.height;
+      const scale = Math.min(1, MAX_SIDE / Math.max(dw, dh));
+      const sw = Math.max(2, Math.round(dw * scale));
+      const sh = Math.max(2, Math.round(dh * scale));
+      let depthSrc = depthCanvas;
+      if (sw !== dw || sh !== dh) {
+        const small = document.createElement('canvas');
+        small.width = sw; small.height = sh;
+        small.getContext('2d').drawImage(depthCanvas, 0, 0, sw, sh);
+        depthSrc = small;
+      }
+
+      const depthTex = new THREE.CanvasTexture(depthSrc);
+      depthTex.colorSpace = THREE.NoColorSpace;
+      depthTex.generateMipmaps = false;
+      depthTex.minFilter = THREE.LinearFilter;
+      depthTex.magFilter = THREE.LinearFilter;
+      depthTex.needsUpdate = true;
+
+      // Anchor the parallax to the receding background rather than a fixed
+      // midpoint. This keeps the background still while the closer subject drifts
+      // forward, so a subject never splits into a front/back "double layer".
+      let rawPivot = 0.55;
+      try {
+        const pctx = depthSrc.getContext('2d', { willReadFrequently: true });
+        const pdata = pctx.getImageData(0, 0, depthSrc.width, depthSrc.height).data;
+        const n = depthSrc.width * depthSrc.height;
+        const rs = new Float32Array(n);
+        for (let i = 0; i < n; i++) rs[i] = pdata[i * 4];
+        rs.sort((a, b) => a - b);
+        const bgR = rs[Math.floor(n * 0.85)];
+        rawPivot = Math.max(0, Math.min(1, 1 - bgR / 255));
+      } catch (e) { /* keep fallback pivot */ }
+      if (!S.pivotManual) {
+        S.pivot = Math.pow(Math.max(0, Math.min(1, rawPivot + S.depthBias * 0.20)), S.depthContrast);
+        $('pivot').value = S.pivot; $('pivotVal').textContent = S.pivot.toFixed(2);
+      }
+
+      return new THREE.ShaderMaterial({
+        vertexShader: parallaxVert,
+        fragmentShader: parallaxFrag,
+        uniforms: {
+          map: { value: texture },
+          depthMap: { value: depthTex },
+          uViewOffset: { value: new THREE.Vector2(0, 0) },
+          uDepthScale: { value: S.depthScale },
+          uDepthBias: { value: S.depthBias },
+          uDepthContrast: { value: S.depthContrast },
+          uLayerScale: { value: layerScale },
+          uPivot: { value: S.pivot },
+          uMaxOffset: { value: S.maxOffset },
+        },
         transparent,
-        alphaTest: transparent ? 0.015 : 0,
-        side: THREE.FrontSide,
         depthWrite: !transparent,
+        side: THREE.FrontSide,
+        userData: { rawPivot },
       });
+    }
+
+    function updateParallaxUniforms() {
+      for (const m of parallaxMats) {
+        m.uniforms.uDepthScale.value = S.depthScale;
+        m.uniforms.uDepthBias.value = S.depthBias;
+        m.uniforms.uDepthContrast.value = S.depthContrast;
+        m.uniforms.uMaxOffset.value = S.maxOffset;
+        if (!S.pivotManual && m.userData && m.userData.rawPivot !== undefined) {
+          S.pivot = Math.pow(
+            Math.max(0, Math.min(1, m.userData.rawPivot + S.depthBias * 0.20)),
+            S.depthContrast
+          );
+        }
+        m.uniforms.uPivot.value = S.pivot;
+      }
+      if (!S.pivotManual) {
+        $('pivot').value = S.pivot; $('pivotVal').textContent = S.pivot.toFixed(2);
+      }
     }
 
     // Studio portraits often contain a real wall shadow that a depth effect
@@ -1240,30 +1388,33 @@
       // Use one continuous depth surface by default; enable layered occlusion
       // only when an AI inpainted background is actually available.
       const useSeparatedLayers = Boolean(alphaRaw && S.inpaintedBg);
+      parallaxMats = [];
       if (!useSeparatedLayers) {
         const texture = new THREE.CanvasTexture(cleanImage);
-        planeBack = new THREE.Mesh(makeDepthGeometry(asp, depthTemp, 1), makeLayerMaterial(texture));
+        const mat = makeParallaxMaterial(texture, depthTemp, { layerScale: 1 });
+        planeBack = new THREE.Mesh(makeParallaxPlane(asp), mat);
         planeBack.position.z = 0;
         scene.add(planeBack);
+        parallaxMats.push(mat);
       } else {
-        const texBack = new THREE.CanvasTexture(bgCanvas);
-        const matBack = makeLayerMaterial(texBack);
-        planeBack = new THREE.Mesh(makeDepthGeometry(asp, depthTemp, 0.42), matBack);
+        const matBack = makeParallaxMaterial(new THREE.CanvasTexture(bgCanvas), depthTemp, { layerScale: 0.42 });
+        planeBack = new THREE.Mesh(makeParallaxPlane(asp), matBack);
         planeBack.position.z = 0;
         scene.add(planeBack);
+        parallaxMats.push(matBack);
 
-        const texFront = new THREE.CanvasTexture(fgCanvas);
-        const matFront = makeLayerMaterial(texFront, true);
-        planeFront = new THREE.Mesh(makeDepthGeometry(asp, depthTemp, 1.15), matFront);
+        const matFront = makeParallaxMaterial(new THREE.CanvasTexture(fgCanvas), depthTemp, { layerScale: 1.15, transparent: true });
+        planeFront = new THREE.Mesh(makeParallaxPlane(asp), matFront);
         planeFront.position.z = 0.012;
         scene.add(planeFront);
+        parallaxMats.push(matFront);
       }
     }
 
-    function tick(scheduled = false) {
+    function tick(timestamp, scheduled = false) {
       if (!scheduled && tickRunning) return;
       tickRunning = true;
-      requestAnimationFrame(() => tick(true));
+      requestAnimationFrame((ts) => tick(ts, true));
       if (!planeBack) return;
 
       // Deadzone filter: ignore tiny target changes to prevent jelly
@@ -1278,19 +1429,20 @@
         S.currY += dy * k;
       }
 
-      camera.position.x = S.currX;
-      camera.position.y = S.currY;
-      camera.position.z = 2;
-      camera.lookAt(0, 0, 0);
+      // Apple-style parallax: keep the card flat and centred, feeding the
+      // smoothed view offset into the shader instead of orbiting a camera.
+      for (const m of parallaxMats) {
+        m.uniforms.uViewOffset.value.set(S.currX, S.currY);
+      }
 
       // Cosmic particles: slow ethereal drift + star twinkling
       // Skip heavy per-particle update when camera is idle to save CPU
       S.tickFrame++;
-      const isIdle = S.targetX === 0 && S.targetY === 0 && S.currX === 0 && S.currY === 0;
+      const isIdle = Math.abs(S.targetX) + Math.abs(S.targetY) + Math.abs(S.currX) + Math.abs(S.currY) < 0.001;
       if (particles && particleData && (!isIdle || S.tickFrame % 3 === 0)) {
         const pos = particles.geometry.attributes.position.array;
         const siz = particles.geometry.attributes.size.array;
-        const time = performance.now() * 0.001;
+        const time = (timestamp || performance.now()) * 0.001;
 
         for (let i = 0; i < particleData.length; i++) {
           const pd = particleData[i];
@@ -1335,7 +1487,6 @@
       if (!S.gyroActive || !S.depthReady) return;
       const gamma = Number.isFinite(event.gamma) ? event.gamma : 0; // left / right
       const beta = Number.isFinite(event.beta) ? event.beta : 0;    // front / back
-      const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
       // Small, capped motion avoids exposing the edges of a single photo.
       S.targetX = clamp(gamma / 42, -1, 1) * S.sensitivity * 0.18;
       S.targetY = clamp((beta - 45) / 42, -1, 1) * S.sensitivity * -0.18;
@@ -1348,8 +1499,16 @@
     }
 
     function updateModeUI() {
-      document.querySelectorAll('.mode-option').forEach(o => o.classList.toggle('active', o.dataset.mode === S.mode));
-      document.querySelectorAll('.mobile-mode-option').forEach(o => o.classList.toggle('active', o.dataset.mobileMode === S.mode));
+      document.querySelectorAll('.mode-option').forEach(o => {
+        const active = o.dataset.mode === S.mode;
+        o.classList.toggle('active', active);
+        o.setAttribute('aria-selected', active);
+      });
+      document.querySelectorAll('.mobile-mode-option').forEach(o => {
+        const active = o.dataset.mobileMode === S.mode;
+        o.classList.toggle('active', active);
+        o.setAttribute('aria-selected', active);
+      });
     }
 
     function setInteractionMode(mode, { silent = false } = {}) {
@@ -1449,7 +1608,6 @@
       const t = e.touches[0];
       const cx = (t.clientX - rect.left) / rect.width;
       const cy = (t.clientY - rect.top) / rect.height;
-      const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
       S.targetX = clamp((cx - 0.5) * 2, -1, 1) * S.sensitivity * 0.22;
       S.targetY = clamp((0.5 - cy) * 2, -1, 1) * S.sensitivity * 0.22;
       S.isGrabbing = true;
@@ -1460,7 +1618,6 @@
       const t = e.touches[0];
       const cx = (t.clientX - rect.left) / rect.width;
       const cy = (t.clientY - rect.top) / rect.height;
-      const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
       S.targetX = clamp((cx - 0.5) * 2, -1, 1) * S.sensitivity * 0.22;
       S.targetY = clamp((0.5 - cy) * 2, -1, 1) * S.sensitivity * 0.22;
       S.isGrabbing = true;
@@ -1477,6 +1634,9 @@
 
     // ===================== FILE UPLOAD =====================
     uploadZone.addEventListener('click', () => fileInput.click());
+    uploadZone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+    });
     uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
     uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
     uploadZone.addEventListener('drop', (e) => {
@@ -1487,6 +1647,7 @@
 
     function loadFile(file) {
       if (!file.type.startsWith('image/')) { toast('请选择图片文件'); return; }
+      if (file.size > 10 * 1024 * 1024) { toast('图片文件过大，建议 10MB 以内'); return; }
       // Clean up previous scene state
       if (S.imageUrl) URL.revokeObjectURL(S.imageUrl);
       if (planeBack) { scene.remove(planeBack); planeBack.geometry.dispose(); planeBack.material.dispose(); planeBack = null; }
@@ -1510,9 +1671,12 @@
       $('depthStatus').style.display = 'none';
       $('depthStatus').classList.remove('done');
       $('hudDepth').classList.replace('on', 'off');
+      syncMobileStatus('hudDepth', 'off');
       disableGyroscope();
+      S.pivotManual = false;
       S.mode = isMobileViewport() ? 'touch' : 'gesture';
       threeCanvas.style.display = 'none';
+      S.imageReady = false;
       $('welcomeScreen').style.display = 'block';
       $('hud').style.display = 'none';
       updateMobileLayout();
@@ -1522,8 +1686,14 @@
       img.onload = () => {
         uploadPreview.src = url;
         uploadZone.classList.add('has-image');
+        S.imageReady = true;
         $('generateBtn').disabled = false;
         toast('图片加载成功，点击 "生成 2.5D 效果" 开始');
+      };
+      img.onerror = () => {
+        toast('图片加载失败，文件可能已损坏，请尝试其他图片');
+        if (S.imageUrl) URL.revokeObjectURL(S.imageUrl);
+        S.imageUrl = null;
       };
       img.src = url;
     }
@@ -1531,36 +1701,43 @@
     // ===================== DEPTH ESTIMATION =====================
     let depthPipeline = null;
 
-    async function loadModel() {
-      try {
-        const { pipeline, env } = await cdnImport('@huggingface/transformers@3');
-        env.allowLocalModels = false;
-        depthPipeline = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf', {
-          progress_callback: (p) => {
-            if (p.status === 'progress') {
-              $('loadingText').textContent = `正在下载模型... ${Math.round(p.progress || 0)}%`;
+    async function loadModel(retries = 2) {
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          const { pipeline, env } = await cdnImport('@huggingface/transformers@3.4.1');
+          env.allowLocalModels = false;
+          depthPipeline = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf', {
+            progress_callback: (p) => {
+              if (p.status === 'progress') {
+                $('loadingText').textContent = `正在下载模型... ${Math.round(p.progress || 0)}%`;
+              }
             }
+          });
+          S.modelLoaded = true;
+          return true;
+        } catch (err) {
+          console.error(`Model load attempt ${attempt + 1} failed:`, err);
+          if (attempt < retries) {
+            toast(`模型加载失败，正在重试 (${attempt + 1}/${retries})...`);
+            await new Promise(r => setTimeout(r, 1000));
+          } else {
+            toast('模型加载失败，请检查网络连接后重试');
           }
-        });
-        S.modelLoaded = true;
-        return true;
-      } catch (err) {
-        console.error(err);
-        toast('模型加载失败: ' + err.message);
-        return false;
+        }
       }
+      return false;
     }
 
     async function runDepth() {
       if (!S.imageReady) return;
-      toast('生成中.....请等待30秒', 30000);
+      toast('生成中，请耐心等待...');
       if (!S.modelLoaded) {
         showLoad('正在加载深度估计模型...', '首次加载需要下载模型文件（约50MB），请耐心等待');
         if (!await loadModel()) { hideLoad(); return; }
       }
       showLoad('正在生成深度图...', '');
       try {
-        const { RawImage } = await cdnImport('@huggingface/transformers@3');
+        const { RawImage } = await cdnImport('@huggingface/transformers@3.4.1');
 
         // Load image via img element, then draw to canvas for reliable input
         const img = new Image();
@@ -1595,6 +1772,7 @@
         st.classList.add('done');
         $('depthStatusText').textContent = '深度图生成完成';
         $('hudDepth').classList.replace('off', 'on');
+        syncMobileStatus('hudDepth', 'on');
 
         S.depthReady = true;
         hideLoad();
@@ -1607,7 +1785,7 @@
       } catch (err) {
         console.error(err);
         hideLoad();
-        toast('深度图生成失败: ' + err.message);
+        toast('深度图生成失败，请检查图片后重试');
       }
     }
 
@@ -1634,7 +1812,7 @@
       $('aiStatus').style.display = 'flex';
       try {
         setAIStatus('Segment', 'loading');
-        const t = await cdnImport('@huggingface/transformers@3');
+        const t = await cdnImport('@huggingface/transformers@3.4.1');
         const { AutoModel, AutoProcessor } = t;
         if (!modnetModel) {
           [modnetModel, modnetProc] = await Promise.all([
@@ -1656,12 +1834,19 @@
         imageCanvas.width = w; imageCanvas.height = h;
         imageCanvas.getContext('2d').drawImage(uploadPreview, 0, 0, w, h);
         S.imageCanvas = imageCanvas;
-        const [segResult, faceResult] = await Promise.allSettled([
-          runSegFormer(imageCanvas), runFaceMesh(imageCanvas)
+        const [inpaintResult, segResult, faceResult] = await Promise.allSettled([
+          runLaMaInpainting(imageCanvas, S.mattingModel, w, h),
+          runSegFormer(imageCanvas),
+          runFaceMesh(imageCanvas)
         ]);
         if (S.imageUrl !== expectedUrl) return;
+        if (inpaintResult.status === 'fulfilled' && inpaintResult.value) {
+          S.inpaintedBg = inpaintResult.value;
+          setAIStatus('Inpaint', 'ready');
+        }
         if ((segResult.status === 'fulfilled' && segResult.value) ||
-            (faceResult.status === 'fulfilled' && faceResult.value)) {
+            (faceResult.status === 'fulfilled' && faceResult.value) ||
+            (inpaintResult.status === 'fulfilled' && inpaintResult.value)) {
           if (S.autoParams && S.segmentationData) applyAutoParams();
           buildPlane(uploadPreview, S.depthCanvas);
           toast('AI 深度细节已优化');
@@ -1679,6 +1864,26 @@
 
     $('cameraBtn').addEventListener('click', toggleCam);
 
+    // Theme toggle
+    $('themeToggle').addEventListener('click', () => {
+      document.documentElement.classList.toggle('light');
+      const isLight = document.documentElement.classList.contains('light');
+      const moon = $('themeToggle').querySelector('.icon-moon');
+      const sun = $('themeToggle').querySelector('.icon-sun');
+      moon.style.display = isLight ? 'none' : 'block';
+      sun.style.display = isLight ? 'block' : 'none';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      toast(isLight ? '已切换到浅色模式' : '已切换到深色模式');
+    });
+    // Restore saved theme
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.add('light');
+      const moon = $('themeToggle').querySelector('.icon-moon');
+      const sun = $('themeToggle').querySelector('.icon-sun');
+      moon.style.display = 'none';
+      sun.style.display = 'block';
+    }
+
     async function toggleCam() {
       const btn = $('cameraBtn');
       if (S.cameraActive) { stopCam(); btn.textContent = '开启摄像头'; return; }
@@ -1691,6 +1896,7 @@
         $('cameraPlaceholder').style.display = 'none';
         $('gestureIndicator').style.display = 'flex';
         $('hudCamera').classList.replace('off', 'on');
+        syncMobileStatus('hudCamera', 'on');
         btn.textContent = '关闭摄像头'; btn.disabled = false;
         toast('摄像头已开启，握拳按压画面，移动手掌控制视角倾斜');
         await loadGesture();
@@ -1698,7 +1904,7 @@
       } catch (err) {
         console.error(err);
         btn.textContent = '开启摄像头'; btn.disabled = false;
-        toast('无法访问摄像头: ' + err.message);
+        toast('无法访问摄像头，请确认已授权摄像头权限');
       }
     }
 
@@ -1708,15 +1914,17 @@
       $('cameraPlaceholder').style.display = 'flex';
       $('gestureIndicator').style.display = 'none';
       $('hudCamera').classList.replace('on', 'off');
+      syncMobileStatus('hudCamera', 'off');
       $('hudGesture').classList.replace('on', 'off');
+      syncMobileStatus('hudGesture', 'off');
       if (gAF) { cancelAnimationFrame(gAF); gAF = null; }
     }
 
     async function loadGesture() {
       try {
-        const mod = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/vision_bundle.mjs');
+        const mod = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/vision_bundle.mjs');
         const { GestureRecognizer, FilesetResolver } = mod;
-        const fs = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm');
+        const fs = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm');
         gestureRecognizer = await GestureRecognizer.createFromOptions(fs, {
           baseOptions: {
             modelAssetPath: 'https://storage.googleapis.com/mediapipe-tasks/gesture_recognizer/gesture_recognizer.task',
@@ -1726,6 +1934,7 @@
           runningMode: 'VIDEO'
         });
         $('hudGesture').classList.replace('off', 'on');
+        syncMobileStatus('hudGesture', 'on');
         toast('手势识别模型加载完成');
       } catch (err) {
         console.error(err);
@@ -1750,7 +1959,7 @@
           try {
             const r = gestureRecognizer.recognizeForVideo(webcam, performance.now());
             processGesture(r, w, h);
-          } catch(e) {}
+          } catch(e) { console.debug('Gesture frame skip:', e.message); }
         }
         gAF = requestAnimationFrame(loop);
       };
@@ -1849,6 +2058,19 @@
       el.addEventListener('click', () => {
         setInteractionMode(el.dataset.mode);
       });
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setInteractionMode(el.dataset.mode);
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const tabs = [...document.querySelectorAll('.mode-option')];
+          const idx = tabs.indexOf(el);
+          const next = e.key === 'ArrowRight' ? (idx + 1) % tabs.length : (idx - 1 + tabs.length) % tabs.length;
+          tabs[next].focus();
+          setInteractionMode(tabs[next].dataset.mode);
+        }
+      });
     });
     document.querySelectorAll('.mobile-mode-option').forEach(el => {
       el.addEventListener('click', async () => {
@@ -1856,42 +2078,60 @@
         if (nextMode === 'gyro') await activateGyroscopeMode();
         else setInteractionMode('touch');
       });
+      el.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const nextMode = el.dataset.mobileMode;
+          if (nextMode === 'gyro') await activateGyroscopeMode();
+          else setInteractionMode('touch');
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const tabs = [...document.querySelectorAll('.mobile-mode-option')];
+          const idx = tabs.indexOf(el);
+          const next = e.key === 'ArrowRight' ? (idx + 1) % tabs.length : (idx - 1 + tabs.length) % tabs.length;
+          tabs[next].focus();
+          tabs[next].click();
+        }
+      });
     });
 
     $('depthScale').addEventListener('input', function() {
       S.depthScale = parseFloat(this.value);
       $('depthScaleVal').textContent = this.value;
-      if (planeBack) applyDepthToGeometry(planeBack.geometry);
-      if (planeFront) applyDepthToGeometry(planeFront.geometry);
+      updateParallaxUniforms();
     });
     $('depthBias').addEventListener('input', function() {
       S.depthBias = parseFloat(this.value);
       $('depthBiasVal').textContent = this.value;
-      if (planeBack) applyDepthToGeometry(planeBack.geometry);
-      if (planeFront) applyDepthToGeometry(planeFront.geometry);
-    });
-    $('depthContrast').addEventListener('input', function() {
-      S.depthContrast = parseFloat(this.value);
-      $('depthContrastVal').textContent = this.value;
-      if (planeBack) applyDepthToGeometry(planeBack.geometry);
-      if (planeFront) applyDepthToGeometry(planeFront.geometry);
+      updateParallaxUniforms();
     });
     $('sensitivity').addEventListener('input', function() {
       S.sensitivity = parseFloat(this.value);
       $('sensitivityVal').textContent = this.value;
     });
+    $('depthContrast').addEventListener('input', function() {
+      S.depthContrast = parseFloat(this.value);
+      $('depthContrastVal').textContent = this.value;
+      updateParallaxUniforms();
+    });
     $('damping').addEventListener('input', function() {
       S.damping = parseFloat(this.value);
       $('dampingVal').textContent = this.value;
     });
+    $('pivot').addEventListener('input', function() {
+      S.pivot = parseFloat(this.value);
+      S.pivotManual = true;
+      $('pivotVal').textContent = this.value;
+      updateParallaxUniforms();
+    });
+    $('maxOffset').addEventListener('input', function() {
+      S.maxOffset = parseFloat(this.value);
+      $('maxOffsetVal').textContent = this.value;
+      updateParallaxUniforms();
+    });
 
     $('generateBtn').addEventListener('click', async () => {
-      if (!S.imageReady) {
-        S.imageReady = true;
-        await runDepth();
-      } else {
-        await runDepth();
-      }
+      await runDepth();
     });
 
     // AI refinement is always enabled; only automatic parameter selection is optional.
@@ -1950,7 +2190,7 @@
       if (lamaModel) return true;
       try {
         setAIStatus('Inpaint', 'loading');
-        const t = await cdnImport('@huggingface/transformers@3');
+        const t = await cdnImport('@huggingface/transformers@3.4.1');
         const { AutoModel, AutoProcessor } = t;
         [lamaModel, lamaProc] = await Promise.all([
           AutoModel.from_pretrained('Xenova/lama', {
@@ -1974,7 +2214,7 @@
       if (segformerModel) return true;
       try {
         setAIStatus('Segment', 'loading');
-        const t = await cdnImport('@huggingface/transformers@3');
+        const t = await cdnImport('@huggingface/transformers@3.4.1');
         const { AutoModelForSemanticSegmentation, AutoProcessor } = t;
         [segformerModel, segformerProc] = await Promise.all([
           AutoModelForSemanticSegmentation.from_pretrained('Xenova/segformer-b0-finetuned-ade-512-512', {
@@ -1998,11 +2238,11 @@
       if (faceMesh) return true;
       try {
         setAIStatus('Face', 'loading');
-        const mod = await import('https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@latest/face_mesh.mjs');
+        const mod = await import('https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.mjs');
         const { FaceMesh, FilesetResolver } = mod;
-        const fs = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm');
+        const fs = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm');
         faceMesh = new FaceMesh({
-          locateFile: (f) => 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@latest/' + f
+          locateFile: (f) => 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/' + f
         });
         faceMesh.setOptions({
           maxNumFaces: 3,
@@ -2044,7 +2284,7 @@
         }
         mCtx.putImageData(maskImg, 0, 0);
 
-        const { RawImage } = await cdnImport('@huggingface/transformers@3');
+        const { RawImage } = await cdnImport('@huggingface/transformers@3.4.1');
         const imgRaw = RawImage.fromCanvas(imageCanvas);
         const maskRaw = RawImage.fromCanvas(maskCanvas);
 
@@ -2067,7 +2307,7 @@
 
       $('loadingText').textContent = '正在语义分割...';
       try {
-        const { RawImage } = await cdnImport('@huggingface/transformers@3');
+        const { RawImage } = await cdnImport('@huggingface/transformers@3.4.1');
         const imgRaw = RawImage.fromCanvas(imageCanvas);
         const inputs = await segformerProc(imgRaw);
         const { logits } = await segformerModel(inputs);
@@ -2121,139 +2361,177 @@
       }
     }
 
-    // ===================== ADAPTIVE PARAMS =====================
-    function applyDepthAutoParams() {
-      if (!S.depthCanvas) return;
+    // ===================== ADAPTIVE PARAMS (spatial photo) =====================
+    // Auto tuning for Apple-style spatial photos. Instead of picking one of a
+    // few fixed presets, the depth map is split into foreground/background
+    // clusters with Otsu thresholding, and every parameter is derived from the
+    // measured scene structure:
+    //   separation   – nearness gap between the subject and the background
+    //   fgRatio      – how much of the frame the subject occupies
+    //   centerWeight – how strongly the subject sits in the frame centre
+    //   detail       – depth-edge energy (smearing risk while parallaxing)
+    // Semantic labels only act as gentle priors on top of these signals, so two
+    // portraits with different depth structure still get different parameters.
+
+    function analyzeDepthStats() {
+      if (!S.depthCanvas) return null;
+      const N = 96;
       const probe = document.createElement('canvas');
-      probe.width = 64; probe.height = 64;
+      probe.width = N; probe.height = N;
       const probeCtx = probe.getContext('2d', { willReadFrequently: true });
-      probeCtx.drawImage(S.depthCanvas, 0, 0, probe.width, probe.height);
-      const px = probeCtx.getImageData(0, 0, probe.width, probe.height).data;
-      const depths = [];
-      const grid = new Float32Array(probe.width * probe.height);
-      let centerSum = 0, edgeSum = 0, centerCount = 0, edgeCount = 0;
-      for (let y = 0; y < probe.height; y++) {
-        for (let x = 0; x < probe.width; x++) {
-          const d = 1 - px[(y * probe.width + x) * 4] / 255;
-          depths.push(d);
-          grid[y * probe.width + x] = d;
-          const isCenter = x > 18 && x < 46 && y > 12 && y < 52;
-          if (isCenter) { centerSum += d; centerCount++; }
-          else { edgeSum += d; edgeCount++; }
+      probeCtx.drawImage(S.depthCanvas, 0, 0, N, N);
+      const px = probeCtx.getImageData(0, 0, N, N).data;
+
+      const total = N * N;
+      const near = new Float32Array(total);
+      const BINS = 64;
+      const hist = new Float32Array(BINS);
+      for (let i = 0; i < total; i++) {
+        const n = 1 - px[i * 4] / 255; // bright depth pixels sit far away
+        near[i] = n;
+        hist[Math.min(BINS - 1, Math.floor(n * BINS))]++;
+      }
+
+      // Otsu threshold: split the histogram into the two depth clusters that
+      // actually produce the parallax (subject vs. background).
+      let sumTotal = 0;
+      for (let b = 0; b < BINS; b++) sumTotal += b * hist[b];
+      let bestVar = -1, bestBin = 0, wB = 0, sumB = 0;
+      for (let b = 0; b < BINS; b++) {
+        wB += hist[b];
+        if (wB === 0) continue;
+        const wF = total - wB;
+        if (wF === 0) break;
+        sumB += b * hist[b];
+        const gap = sumB / wB - (sumTotal - sumB) / wF;
+        const between = wB * wF * gap * gap;
+        if (between > bestVar) { bestVar = between; bestBin = b; }
+      }
+      const threshold = (bestBin + 0.5) / BINS;
+
+      let fgSum = 0, fgCount = 0, bgSum = 0, bgCount = 0, centrality = 0;
+      for (let y = 0; y < N; y++) {
+        for (let x = 0; x < N; x++) {
+          const i = y * N + x;
+          if (near[i] >= threshold) {
+            fgSum += near[i]; fgCount++;
+            const dx = (x + 0.5) / N - 0.5;
+            const dy = (y + 0.5) / N - 0.5;
+            centrality += 1 - Math.min(1, Math.sqrt(dx * dx + dy * dy) / 0.55);
+          } else {
+            bgSum += near[i]; bgCount++;
+          }
         }
       }
-      depths.sort((a, b) => a - b);
-      const spread = depths[Math.floor(depths.length * 0.90)] - depths[Math.floor(depths.length * 0.10)];
-      const centerLead = centerSum / centerCount - edgeSum / edgeCount;
+      const fgMean = fgCount > 0 ? fgSum / fgCount : threshold;
+      const bgMean = bgCount > 0 ? bgSum / bgCount : threshold;
+
+      let gradSum = 0;
+      for (let y = 1; y < N; y++) {
+        for (let x = 1; x < N; x++) {
+          const i = y * N + x;
+          gradSum += Math.abs(near[i] - near[i - 1]) + Math.abs(near[i] - near[i - N]);
+        }
+      }
+
       const aspect = S.imageCanvas
         ? S.imageCanvas.width / S.imageCanvas.height
         : (uploadPreview.naturalWidth || 1) / (uploadPreview.naturalHeight || 1);
-      let depthEdgeSum = 0, depthEdgeCount = 0;
-      for (let y = 1; y < probe.height; y++) for (let x = 1; x < probe.width; x++) {
-        const i = y * probe.width + x;
-        depthEdgeSum += Math.abs(grid[i] - grid[i - 1]) + Math.abs(grid[i] - grid[i - probe.width]);
-        depthEdgeCount += 2;
-      }
-      const depthDetail = depthEdgeSum / Math.max(1, depthEdgeCount);
-      const middle = depths[Math.floor(depths.length * 0.50)];
-      const lowerTail = middle - depths[Math.floor(depths.length * 0.15)];
-      const upperTail = depths[Math.floor(depths.length * 0.85)] - middle;
-      let preset;
-      if (spread < 0.12) {
-        preset = { depthScale: 0.38, depthBias: 0.02, depthContrast: 1.0, sensitivity: 0.65, damping: 0.90, label: '平面画面' };
-      } else if (centerLead > 0.08 && aspect < 1.25) {
-        preset = { depthScale: 0.88, depthBias: 0.08, depthContrast: 1.12, sensitivity: 1.05, damping: 0.88, label: '中心主体' };
-      } else if (spread > 0.42) {
-        preset = { depthScale: 0.72, depthBias: 0.04, depthContrast: 1.28, sensitivity: 0.92, damping: 0.87, label: '层次丰富' };
-      } else {
-        preset = { depthScale: 0.60, depthBias: 0.05, depthContrast: 1.10, sensitivity: 0.85, damping: 0.89, label: '自然景深' };
-      }
-      // Use the analysis as continuous signals, not as a final fixed preset.
-      // Depth models normally stretch every image to a similar 0–1 range, so
-      // percentiles alone cannot distinguish a portrait from a flat scene.
-      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-      const focus = clamp(centerLead / Math.max(spread, 0.08), -0.65, 0.65);
-      const portraitBoost = aspect < 0.88 ? 0.09 : (aspect > 1.55 ? -0.05 : 0);
-      const balance = clamp((upperTail - lowerTail) / Math.max(spread, 0.08), -0.45, 0.45);
-      preset = {
-        depthScale: clamp(0.40 + depthDetail * 3.6 + focus * 0.34 + portraitBoost, 0.28, 1.10),
-        depthBias: clamp(0.025 + balance * 0.15, -0.06, 0.14),
-        depthContrast: clamp(0.92 + depthDetail * 4.2 - focus * 0.10, 0.82, 1.55),
-        sensitivity: clamp(0.60 + depthDetail * 2.0 + focus * 0.18, 0.55, 1.25),
-        damping: clamp(0.91 - depthDetail * 0.32, 0.84, 0.92),
-        label: 'continuous depth analysis',
+
+      return {
+        separation: Math.max(0, fgMean - bgMean),
+        fgRatio: fgCount / total,
+        bgRatio: bgCount / total,
+        centerWeight: fgCount > 0 ? centrality / fgCount : 0,
+        detail: gradSum / ((N - 1) * (N - 1) * 2),
+        aspect,
       };
-      S.depthScale = preset.depthScale;
-      S.depthBias = preset.depthBias;
-      S.depthContrast = preset.depthContrast;
-      S.sensitivity = preset.sensitivity;
-      S.damping = preset.damping;
-      $('depthScale').value = preset.depthScale; $('depthScaleVal').textContent = preset.depthScale.toFixed(2);
-      $('depthBias').value = preset.depthBias; $('depthBiasVal').textContent = preset.depthBias.toFixed(2);
-      $('depthContrast').value = preset.depthContrast; $('depthContrastVal').textContent = preset.depthContrast.toFixed(2);
-      $('sensitivity').value = preset.sensitivity; $('sensitivityVal').textContent = preset.sensitivity.toFixed(2);
-      $('damping').value = preset.damping; $('dampingVal').textContent = preset.damping.toFixed(2);
-      if (planeBack) applyDepthToGeometry(planeBack.geometry);
-      if (planeFront) applyDepthToGeometry(planeFront.geometry);
+    }
+
+    function semanticRatios() {
+      if (!S.segmentationData || !S.segmentationDims) return null;
+      const [segH, segW] = S.segmentationDims;
+      const total = segH * segW;
+      let person = 0, sky = 0, building = 0, vegetation = 0, water = 0;
+      for (let i = 0; i < total; i++) {
+        const cls = S.segmentationData[i];
+        if (cls === 13) person++;
+        else if (cls === 2) sky++;
+        else if (cls === 1 || cls === 25) building++;
+        else if (cls === 4 || cls === 5 || cls === 21) vegetation++;
+        else if (cls === 26 || cls === 60) water++;
+      }
+      return {
+        person: person / total,
+        sky: sky / total,
+        building: building / total,
+        vegetation: vegetation / total,
+        water: water / total,
+      };
+    }
+
+    function semanticPrior(r) {
+      if (r.person > 0.12) {
+        return { scale: 1.10, bias: 0.02, contrast: 0.04, sens: 0.05, damp: -0.01, label: '人像' };
+      }
+      if (r.water > 0.15 || (r.sky > 0.10 && r.water > 0.05)) {
+        return { scale: 0.82, bias: 0.00, contrast: -0.04, sens: -0.08, damp: 0.02, label: '水面' };
+      }
+      if (r.sky > 0.15 && r.vegetation > 0.10) {
+        return { scale: 0.94, bias: 0.00, contrast: 0.08, sens: -0.03, damp: 0.00, label: '风景' };
+      }
+      if (r.building > 0.15) {
+        return { scale: 0.98, bias: -0.01, contrast: 0.14, sens: 0.02, damp: 0.00, label: '建筑' };
+      }
+      return { scale: 1.00, bias: 0.00, contrast: 0.00, sens: 0.00, damp: 0.00, label: '默认' };
     }
 
     function applyAutoParams() {
-      if (!S.segmentationData || !S.segmentationDims) {
-        applyDepthAutoParams();
-        return;
-      }
+      const stats = analyzeDepthStats();
+      if (!stats) return;
 
-      const [segH, segW] = S.segmentationDims;
-      const total = segH * segW;
-      let personRatio = 0, skyRatio = 0, buildingRatio = 0, vegetationRatio = 0, waterRatio = 0;
+      const smooth = (t) => t * t * (3 - 2 * t);
 
-      for (let i = 0; i < total; i++) {
-        const cls = S.segmentationData[i];
-        if (cls === 13) personRatio++;
-        else if (cls === 2) skyRatio++;
-        else if (cls === 1 || cls === 25) buildingRatio++;
-        else if (cls === 4 || cls === 5 || cls === 21) vegetationRatio++;
-        else if (cls === 26 || cls === 60) waterRatio++;
-      }
+      const ratios = semanticRatios();
+      const prior = ratios
+        ? semanticPrior(ratios)
+        : { scale: 1, bias: 0, contrast: 0, sens: 0, damp: 0, label: '景深分析' };
 
-      personRatio /= total; skyRatio /= total; buildingRatio /= total;
-      vegetationRatio /= total; waterRatio /= total;
+      // Normalised structure signals, all in 0..1.
+      const sep = smooth(clamp((stats.separation - 0.10) / 0.50, 0, 1));
+      const focus = clamp((stats.centerWeight - 0.35) / 0.45, 0, 1);
+      const coverage = clamp(stats.fgRatio / 0.50, 0, 1);
+      const detail = clamp(stats.detail / 0.05, 0, 1);
+      const aspectAdj = stats.aspect < 0.85 ? 0.05 : (stats.aspect > 1.60 ? -0.04 : 0);
 
-      let preset;
-      if (personRatio > 0.15) {
-        preset = { depthScale: 0.92, depthBias: 0.12, depthContrast: 1.15, sensitivity: 1.1, damping: 0.88, label: '人像' };
-      } else if (skyRatio > 0.15 && vegetationRatio > 0.10) {
-        preset = { depthScale: 0.62, depthBias: 0.06, depthContrast: 1.30, sensitivity: 0.9, damping: 0.86, label: '风景' };
-      } else if (waterRatio > 0.15 || (skyRatio > 0.1 && waterRatio > 0.05)) {
-        preset = { depthScale: 0.42, depthBias: 0.04, depthContrast: 1.08, sensitivity: 0.7, damping: 0.88, label: '水面' };
-      } else if (buildingRatio > 0.15) {
-        preset = { depthScale: 0.72, depthBias: 0.03, depthContrast: 1.42, sensitivity: 1.0, damping: 0.87, label: '建筑' };
-      } else {
-        preset = { depthScale: 0.70, depthBias: 0.06, depthContrast: 1.12, sensitivity: 1.0, damping: 0.87, label: '默认' };
-      }
+      // Stereo intensity follows the measured subject/background gap, so a
+      // strong portrait pushes hard while a flat graphic stays subtle.
+      // Sensitivity stays modest on busy depth edges to avoid smearing.
+      const preset = {
+        depthScale: clamp((0.30 + 0.58 * sep + focus * (0.06 + 0.10 * coverage) + 0.05 * detail + aspectAdj) * prior.scale, 0.25, 1.15),
+        depthBias: clamp(0.03 + (stats.bgRatio - 0.50) * 0.10 + prior.bias, -0.06, 0.16),
+        depthContrast: clamp(0.96 + (1 - sep) * 0.32 + detail * 0.08 + prior.contrast, 0.85, 1.60),
+        sensitivity: clamp(0.60 + 0.24 * focus + 0.12 * sep - 0.06 * detail + prior.sens, 0.55, 1.20),
+        damping: clamp(0.905 - 0.045 * sep + 0.025 * detail + prior.damp, 0.85, 0.94),
+        maxOffset: clamp(0.014 + 0.010 * sep - 0.004 * detail, 0.008, 0.030),
+        label: prior.label,
+      };
 
       S.depthScale = preset.depthScale;
       S.depthBias = preset.depthBias;
       S.depthContrast = preset.depthContrast;
       S.sensitivity = preset.sensitivity;
       S.damping = preset.damping;
+      S.maxOffset = preset.maxOffset;
 
-      // Update UI
-      $('depthScale').value = preset.depthScale;
-      $('depthScaleVal').textContent = preset.depthScale;
-      $('depthBias').value = preset.depthBias;
-      $('depthBiasVal').textContent = preset.depthBias;
-      $('depthContrast').value = preset.depthContrast;
-      $('depthContrastVal').textContent = preset.depthContrast;
-      $('sensitivity').value = preset.sensitivity;
-      $('sensitivityVal').textContent = preset.sensitivity;
-      $('damping').value = preset.damping;
-      $('dampingVal').textContent = preset.damping;
+      $('depthScale').value = preset.depthScale; $('depthScaleVal').textContent = preset.depthScale.toFixed(2);
+      if ($('depthBias')) { $('depthBias').value = preset.depthBias; $('depthBiasVal').textContent = preset.depthBias.toFixed(2); }
+      $('depthContrast').value = preset.depthContrast; $('depthContrastVal').textContent = preset.depthContrast.toFixed(2);
+      $('sensitivity').value = preset.sensitivity; $('sensitivityVal').textContent = preset.sensitivity.toFixed(2);
+      $('damping').value = preset.damping; $('dampingVal').textContent = preset.damping.toFixed(2);
+      $('maxOffset').value = preset.maxOffset; $('maxOffsetVal').textContent = preset.maxOffset.toFixed(3);
 
-      // Update shader uniforms if planes exist
-      if (planeBack) applyDepthToGeometry(planeBack.geometry);
-      if (planeFront) applyDepthToGeometry(planeFront.geometry);
-
+      updateParallaxUniforms();
       toast('自动参数已应用: ' + preset.label + '模式');
     }
 
@@ -2299,11 +2577,33 @@
         }
       }
 
+      // Smooth transition: 3×3 Gaussian blur to eliminate hard edges between enhanced and original regions
+      const kernel = [1, 2, 1, 2, 4, 2, 1, 2, 1];
+      const kSum = 16;
+      const smoothed = new Uint8ClampedArray(enhanced);
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const pi = (y * w + x) * 4;
+          if (enhanced[pi] === dData.data[pi] && enhanced[pi + 1] === dData.data[pi + 1]) continue;
+          let acc = 0, ki = 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              const ni = ((y + dy) * w + (x + dx)) * 4;
+              acc += enhanced[ni] * kernel[ki++];
+            }
+          }
+          const val = Math.round(acc / kSum);
+          smoothed[pi] = val;
+          smoothed[pi + 1] = val;
+          smoothed[pi + 2] = val;
+        }
+      }
+
       const outCanvas = document.createElement('canvas');
       outCanvas.width = w; outCanvas.height = h;
       const outCtx = outCanvas.getContext('2d');
       const outImg = outCtx.createImageData(w, h);
-      outImg.data.set(enhanced);
+      outImg.data.set(smoothed);
       outCtx.putImageData(outImg, 0, 0);
       return outCanvas;
     }
@@ -2339,6 +2639,29 @@
         }
       }
 
+      // Smooth transition: 3×3 Gaussian blur to eliminate step-like depth jumps at semantic boundaries
+      const kernel = [1, 2, 1, 2, 4, 2, 1, 2, 1];
+      const kSum = 16;
+      const smoothed = new Uint8ClampedArray(outImg.data);
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const pi = (y * w + x) * 4;
+          if (outImg.data[pi] === dData.data[pi] && outImg.data[pi + 1] === dData.data[pi + 1]) continue;
+          let acc = 0, ki = 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              const ni = ((y + dy) * w + (x + dx)) * 4;
+              acc += outImg.data[ni] * kernel[ki++];
+            }
+          }
+          const val = Math.round(acc / kSum);
+          smoothed[pi] = val;
+          smoothed[pi + 1] = val;
+          smoothed[pi + 2] = val;
+        }
+      }
+      outImg.data.set(smoothed);
+
       outCtx.putImageData(outImg, 0, 0);
       return outCanvas;
     }
@@ -2360,7 +2683,7 @@
         try {
           const url = source(pkgPath);
           const mod = await import(url);
-          if (Object.keys(mod).length === 0 && CDN_SOURCES.indexOf(source) < CDN_SOURCES.length - 1) continue;
+          if (Reflect.ownKeys(mod).length === 0 && CDN_SOURCES.indexOf(source) < CDN_SOURCES.length - 1) continue;
           return mod;
         } catch (e) { /* try next CDN */ }
       }
@@ -2374,6 +2697,12 @@
     }
     function hideLoad() { $('loadingOverlay').classList.remove('visible'); }
 
+    function syncMobileStatus(id, state) {
+      const mobileId = 'm' + id.charAt(0).toUpperCase() + id.slice(1);
+      const mobileEl = document.getElementById(mobileId);
+      if (mobileEl) mobileEl.classList.toggle('on', state === 'on');
+    }
+
     let toastTimer;
     function toast(msg, duration) {
       const el = $('toast');
@@ -2385,6 +2714,7 @@
 
     // ===================== INIT =====================
     initThree();
+    setupMobileGyroscope();
     updateMobileLayout();
   </script>
 </body>
