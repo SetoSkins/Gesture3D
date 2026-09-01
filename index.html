@@ -317,26 +317,33 @@
       .header-actions { display: none; }
       .panel-camera { display: none; }
     }
-    @media (max-width: 600px) {
-      body { overflow: auto; }
-      .main { flex-direction: column; height: auto; min-height: 100vh; }
-      .sidebar { width: 100%; min-width: auto; flex: none; max-height: none; border-right: none; border-bottom: none; }
-      .canvas-area { order: -1; flex: none; width: 100%; min-height: 240px; border-bottom: 1px solid var(--rule); }
-      .canvas-area.mobile-hidden { display: none; }
-      .header-actions { display: none; }
-      .panel-camera { display: none; }
-      .panel-ai { display: none; }
-      .mobile-only { display: block; }
-      .welcome { padding: 24px 16px; }
-      .welcome h2 { font-size: 18px; }
-      .welcome p { font-size: 13px; }
-      .welcome-steps { flex-direction: column; gap: 10px; }
-      .upload-text { font-size: 13px; }
-      .panel { padding: 14px; }
-      .panel-title { margin-bottom: 10px; }
-      .btn { padding: 10px 16px; font-size: 13px; }
-      .hud { bottom: 10px; padding: 8px 14px; font-size: 11px; gap: 10px; display: none !important; }
+@media (max-width: 600px) { 
+    .depth-preview,
+    .depth-status,
+    .gesture-indicator,
+    #gestureIndicator {
+        display: none !important;
     }
+
+    body { overflow: auto; } 
+    .main { flex-direction: column; height: auto; min-height: 100vh; } 
+    .sidebar { width: 100%; min-width: auto; flex: none; max-height: none; border-right: none; border-bottom: none; } 
+    .canvas-area { order: -1; flex: none; width: 100%; min-height: 240px; border-bottom: 1px solid var(--rule); } 
+    .canvas-area.mobile-hidden { display: none; } 
+    .header-actions { display: none; } 
+    .panel-camera { display: none; } 
+    .panel-ai { display: none; } 
+    .mobile-only { display: block; } 
+    .welcome { padding: 24px 16px; } 
+    .welcome h2 { font-size: 18px; } 
+    .welcome p { font-size: 13px; } 
+    .welcome-steps { flex-direction: column; gap: 10px; } 
+    .upload-text { font-size: 13px; } 
+    .panel { padding: 14px; } 
+    .panel-title { margin-bottom: 10px; } 
+    .btn { padding: 10px 16px; font-size: 13px; } 
+    .hud { bottom: 10px; padding: 8px 14px; font-size: 11px; gap: 10px; display: none !important; } 
+}
 
     /* Toggle Switch */
     .toggle-switch { position: relative; display: inline-block; width: 42px; height: 24px; }
