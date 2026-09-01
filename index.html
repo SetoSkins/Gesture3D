@@ -1647,7 +1647,7 @@
 
     function loadFile(file) {
       if (!file.type.startsWith('image/')) { toast('请选择图片文件'); return; }
-      if (file.size > 10 * 1024 * 1024) { toast('图片文件过大，建议 10MB 以内'); return; }
+      if (file.size > 30 * 1024 * 1024) { toast('图片文件过大，建议 30MB 以内'); return; }
       // Clean up previous scene state
       if (S.imageUrl) URL.revokeObjectURL(S.imageUrl);
       if (planeBack) { scene.remove(planeBack); planeBack.geometry.dispose(); planeBack.material.dispose(); planeBack = null; }
