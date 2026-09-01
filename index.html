@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gesture 2.5D - 手势控制2.5D图像生成器</title>
+  <title>Gesture 3D - 手势控制3D图像生成器</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%236c5ce7'/><stop offset='100%' stop-color='%2300cec9'/></linearGradient></defs><rect width='32' height='32' rx='6' fill='url(%23g)'/><text x='16' y='22' text-anchor='middle' font-size='18'>✋</text></svg>">
   <style>
     :root {
@@ -409,7 +409,7 @@
   <header class="header">
     <div class="logo">
       <div class="logo-icon">&#9995;</div>
-      <span>Gesture 2.5D</span>
+      <span>Gesture 3D</span>
     </div>
     <div class="header-actions">
       <button class="theme-toggle" id="themeToggle" title="切换深色/浅色模式" aria-label="切换深色/浅色模式">
@@ -545,7 +545,7 @@
       <!-- Actions -->
       <div class="panel">
         <div class="panel-title"><span>&#127919;</span> 操作</div>
-        <button class="btn btn-primary btn-block" id="generateBtn" disabled>生成 2.5D 效果</button>
+        <button class="btn btn-primary btn-block" id="generateBtn" disabled>生成 3D 效果</button>
         <button class="btn btn-secondary btn-block" style="margin-top:8px;" id="resetBtn">重置视角</button>
       </div>
 
@@ -565,15 +565,15 @@
     <section class="canvas-area" id="canvasArea">
       <div class="welcome" id="welcomeScreen">
         <div class="welcome-icon">&#9995;</div>
-        <h2>手势控制 2.5D 图像生成器</h2>
-        <p>上传一张静态图片，AI 将自动生成深度图并将其转化为 2.5D 动态效果。通过手势抓取/释放来控制视角，感受图像的立体深度。</p>
+        <h2>手势控制 3D 图像生成器</h2>
+        <p>上传一张静态图片，AI 将自动生成深度图并将其转化为 3D 动态效果。通过手势抓取/释放来控制视角，感受图像的立体深度。</p>
         <div class="welcome-steps">
           <div class="welcome-step"><div class="step-num">1</div><div class="step-text">上传图片</div></div>
           <div class="welcome-step"><div class="step-num">2</div><div class="step-text">生成深度图</div></div>
           <div class="welcome-step"><div class="step-num">3</div><div class="step-text">手势控制视角</div></div>
         </div>
       </div>
-      <canvas id="threeCanvas" style="display:none;" aria-label="2.5D 视差视图"></canvas>
+      <canvas id="threeCanvas" style="display:none;" aria-label="3D 视差视图"></canvas>
       <div class="hud" id="hud" style="display:none;">
         <div class="hud-item"><div class="hud-dot off" id="hudDepth"></div><span>深度图</span></div>
         <div class="hud-item"><div class="hud-dot off" id="hudCamera"></div><span>摄像头</span></div>
@@ -1688,7 +1688,7 @@
         uploadZone.classList.add('has-image');
         S.imageReady = true;
         $('generateBtn').disabled = false;
-        toast('图片加载成功，点击 "生成 2.5D 效果" 开始');
+        toast('图片加载成功，点击 "生成 3D 效果" 开始');
       };
       img.onerror = () => {
         toast('图片加载失败，文件可能已损坏，请尝试其他图片');
@@ -1779,7 +1779,7 @@
         // Render as soon as the essential depth model finishes.  Secondary AI
         // models enhance the image in the background and never block the result.
         showScene();
-        toast(isMobileViewport() ? '2.5D 效果生成完成！可在下方切换陀螺仪或触摸控制' : '2.5D 效果生成完成！试试手势或鼠标控制视角');
+        toast(isMobileViewport() ? '3D 效果生成完成！可在下方切换陀螺仪或触摸控制' : '3D 效果生成完成！试试手势或鼠标控制视角');
         if (S.aiEnhanced) enhanceSceneAI(image, w, h);
         return;
       } catch (err) {
