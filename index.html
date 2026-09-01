@@ -2798,22 +2798,26 @@ if (window.matchMedia('(max-width: 600px)').matches) {
 
             startValue = slider.value;
 
-            if (Math.abs(touch.clientX - thumbX) <= 28) {
+            if (Math.abs(touch.clientX - thumbX) <= 30) {
                 dragging = true;
             } else {
                 dragging = false;
+                e.preventDefault();
+                e.stopImmediatePropagation();
                 slider.value = startValue;
             }
-        }, { passive: true });
+        }, { passive: false, capture: true });
 
         slider.addEventListener('touchmove', e => {
             if (!dragging) {
                 e.preventDefault();
+                e.stopImmediatePropagation();
                 slider.value = startValue;
                 return;
             }
 
             e.preventDefault();
+            e.stopImmediatePropagation();
 
             const touch = e.touches[0];
             const rect = slider.getBoundingClientRect();
@@ -2824,21 +2828,27 @@ if (window.matchMedia('(max-width: 600px)').matches) {
             let percent = (touch.clientX - rect.left) / rect.width;
             percent = Math.max(0, Math.min(1, percent));
 
-            const value = min + percent * (max - min);
+            slider.value = min + percent * (max - min);
 
-            slider.value = value;
             slider.dispatchEvent(new Event('input', {
                 bubbles: true
             }));
-        }, { passive: false });
+        }, { passive: false, capture: true });
 
-        slider.addEventListener('touchend', () => {
+        slider.addEventListener('touchend', e => {
+            if (!dragging) {
+                slider.value = startValue;
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+
             dragging = false;
-        }, { passive: true });
+        }, { passive: false, capture: true });
 
         slider.addEventListener('touchcancel', () => {
+            slider.value = startValue;
             dragging = false;
-        }, { passive: true });
+        }, { passive: true, capture: true });
     });
 }
   </script>
