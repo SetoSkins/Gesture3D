@@ -693,6 +693,7 @@
 
     // ===================== STATE =====================
     const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+    const GYRO_DEPTH_SCALE = 1.75;
     const S = {
       mode: 'gesture',
       gyroActive: false,
@@ -747,9 +748,15 @@
     let tickRunning = false;
     const DEADZONE = 0.008;
 
+    function applySceneBackground() {
+      if (!scene) return;
+      const light = document.documentElement.classList.contains('light');
+      scene.background = new THREE.Color(light ? 0xf5f5f8 : 0x0a0a0f);
+    }
+
     function initThree() {
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0a0a0f);
+      applySceneBackground();
       camera = new THREE.PerspectiveCamera(30, 1, 0.01, 10);
       camera.position.z = 2;
       renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true });
@@ -1607,6 +1614,7 @@
       S.isGrabbing = false;
       S.targetX = 0;
       S.targetY = 0;
+      syncDepthScaleLock();
       updateModeUI();
       if (silent) return;
       if (mode === 'mouse') toast('已切换到鼠标控制，悬停画面控制视角');
@@ -1958,6 +1966,7 @@
     $('themeToggle').addEventListener('click', () => {
       document.documentElement.classList.toggle('light');
       const isLight = document.documentElement.classList.contains('light');
+      applySceneBackground();
       const moon = $('themeToggle').querySelector('.icon-moon');
       const sun = $('themeToggle').querySelector('.icon-sun');
       moon.style.display = isLight ? 'none' : 'block';
@@ -2228,6 +2237,7 @@
     $('autoParamsToggle').addEventListener('change', function() {
       S.autoParams = this.checked;
       if (this.checked) applyAutoParams();
+      else syncDepthScaleLock();
       toast(this.checked ? '自动参数已开启' : '自动参数已关闭');
     });
 
@@ -2576,6 +2586,20 @@
       return { scale: 1.00, bias: 0.00, contrast: 0.00, sens: 0.00, damp: 0.00, label: '默认' };
     }
 
+    function syncDepthScaleLock() {
+      const locked = S.mode === 'gyro' && S.autoParams;
+      const slider = $('depthScale');
+      if (locked) {
+        S.depthScale = GYRO_DEPTH_SCALE;
+        slider.value = GYRO_DEPTH_SCALE;
+        slider.disabled = true;
+        $('depthScaleVal').textContent = GYRO_DEPTH_SCALE.toFixed(2);
+        updateParallaxUniforms();
+      } else {
+        slider.disabled = false;
+      }
+    }
+
     function applyAutoParams() {
       const stats = analyzeDepthStats();
       if (!stats) return;
@@ -2622,6 +2646,7 @@
       $('maxOffset').value = preset.maxOffset; $('maxOffsetVal').textContent = preset.maxOffset.toFixed(3);
 
       updateParallaxUniforms();
+      syncDepthScaleLock();
       toast('自动参数已应用: ' + preset.label + '模式');
     }
 
